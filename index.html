@@ -1,0 +1,1739 @@
+```html
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAVAGEE /// UNLEASH THE MUTATION | High-Voltage Energy</title>
+  
+  <!-- SEO & Social OpenGraph -->
+  <meta name="description" content="SAVAGEE is high-voltage bio-engineered energy. Zero sugar, 200mg natural caffeine, nootropic brain matrix, and pure savage focus.">
+  <meta property="og:title" content="SAVAGEE Energy Drink - Unleash The Mutation">
+  <meta property="og:description" content="Zero Sugar. Pure Performance. Explore the 3D Savagee Can experience.">
+
+  <!-- Google Fonts: Orbitron & Rajdhani -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Three.js & Tone.js Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Orbitron', 'sans-serif'],
+            sans: ['Rajdhani', 'sans-serif'],
+            mono: ['Courier New', 'monospace'],
+          },
+          colors: {
+            savage: {
+              toxic: '#00FF66',
+              cyan: '#00F0FF',
+              blood: '#FF003C',
+              void: '#A855F7',
+              dark: '#070709',
+              card: '#0f0f14',
+              border: '#1f1f2a',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #070709;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1f1f2a;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #00FF66;
+    }
+
+    /* Ambient cyber grid background */
+    .bg-grid {
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    }
+
+    /* Text Glow Utilities */
+    .glow-toxic { text-shadow: 0 0 15px rgba(0, 255, 102, 0.7); }
+    .glow-cyan  { text-shadow: 0 0 15px rgba(0, 240, 255, 0.7); }
+    .glow-blood { text-shadow: 0 0 15px rgba(255, 0, 60, 0.7); }
+    .glow-void  { text-shadow: 0 0 15px rgba(168, 85, 247, 0.7); }
+
+    /* Touch-action helper for 3D canvas interaction on mobile */
+    #canvas-container {
+      touch-action: pan-y;
+    }
+
+    /* Glassmorphism cybernetic HUD for scroll tracking */
+    .hud-backdrop {
+      background: rgba(10, 10, 14, 0.75);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    /* Diagonal aggressive badge cut */
+    .slanted {
+      clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    }
+  </style>
+</head>
+
+<body class="bg-savage-dark bg-grid selection:bg-savage-toxic selection:text-black text-zinc-100 overflow-x-hidden">
+
+  <!-- Global Fixed 3D Canvas Viewport: Follows user across entire page scroll journey -->
+  <div id="canvas-container" class="fixed inset-0 z-10 pointer-events-none w-full h-full overflow-hidden">
+    <!-- Three.js Canvas injected dynamically here -->
+  </div>
+
+  <!-- Real-Time Cybernetic 3D Can Telemetry HUD (Fixed on right screen edge) -->
+  <aside id="scroll-hud" class="fixed right-4 top-1/2 -translate-y-1/2 z-30 hidden xl:flex flex-col items-end space-y-3 pointer-events-none">
+    <div class="hud-backdrop border border-zinc-800/80 p-3.5 rounded-xl shadow-2xl space-y-2.5 w-44">
+      <div class="flex items-center justify-between border-b border-zinc-800 pb-1.5">
+        <div class="flex items-center space-x-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-savage-toxic animate-ping"></span>
+          <span class="text-[9px] font-display font-black tracking-widest text-zinc-300 uppercase">3D TELEMETRY</span>
+        </div>
+        <span id="hud-stage-name" class="text-[9px] font-mono text-savage-toxic font-bold uppercase">HERO</span>
+      </div>
+
+      <!-- Live metrics -->
+      <div class="space-y-1 text-[10px] font-mono text-zinc-400">
+        <div class="flex justify-between">
+          <span>ORBIT Y:</span>
+          <span id="hud-rot-y" class="text-white font-bold">0.0°</span>
+        </div>
+        <div class="flex justify-between">
+          <span>PITCH X:</span>
+          <span id="hud-rot-x" class="text-white font-bold">0.0°</span>
+        </div>
+        <div class="flex justify-between">
+          <span>SCROLL:</span>
+          <span id="hud-scroll-pct" class="text-savage-toxic font-bold">0%</span>
+        </div>
+      </div>
+
+      <!-- Segmented Scroll Track -->
+      <div class="space-y-1 pt-1 border-t border-zinc-800">
+        <div class="flex justify-between text-[8px] text-zinc-500 font-bold uppercase">
+          <span>STAGE</span>
+          <span id="hud-stage-num">01 / 05</span>
+        </div>
+        <div class="w-full bg-zinc-950 rounded-full h-1 overflow-hidden">
+          <div id="hud-scroll-bar" class="h-full bg-gradient-to-r from-savage-toxic via-savage-cyan to-savage-blood w-0 transition-all duration-100"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Camera Mode Indicator -->
+    <div class="hud-backdrop px-2.5 py-1 rounded-full border border-zinc-800 text-[9px] font-display tracking-wider text-zinc-400 uppercase flex items-center space-x-1.5">
+      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+      <span>SCROLL-DRIVEN DYNAMICS</span>
+    </div>
+  </aside>
+
+  <!-- Top Navigation -->
+  <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-savage-dark/80 border-b border-savage-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="#" class="flex items-center space-x-3 group">
+        <div class="w-10 h-10 rounded-lg bg-black border border-savage-toxic/40 flex items-center justify-center p-1.5 shadow-[0_0_15px_rgba(0,255,102,0.3)] group-hover:scale-105 transition">
+          <!-- Monster style triple claw SVG -->
+          <svg viewBox="0 0 100 100" class="w-full h-full fill-savage-toxic">
+            <path d="M20,10 C22,35 15,70 30,95 C25,70 30,35 28,10 Z" />
+            <path d="M48,5 C52,38 42,75 58,98 C50,70 56,35 54,5 Z" />
+            <path d="M78,12 C75,40 70,72 85,92 C77,68 82,38 84,12 Z" />
+          </svg>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-display font-black text-2xl tracking-tighter text-white group-hover:text-savage-toxic transition">
+            SAVAGEE<span class="text-savage-toxic">.</span>
+          </span>
+          <span class="text-[9px] font-mono tracking-widest text-zinc-500 uppercase -mt-1">HIGH VOLTAGE FUEL</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <nav class="hidden md:flex items-center space-x-8 text-sm font-display tracking-wider font-bold">
+        <a href="#hero" class="text-zinc-400 hover:text-savage-toxic transition">STAGE 01 /// HERO</a>
+        <a href="#flavors" class="text-zinc-400 hover:text-savage-toxic transition">STAGE 02 /// ARSENAL</a>
+        <a href="#formula" class="text-zinc-400 hover:text-savage-toxic transition">STAGE 03 /// FORMULA</a>
+        <a href="#squad" class="text-zinc-400 hover:text-savage-toxic transition">STAGE 04 /// SQUAD</a>
+      </nav>
+
+      <!-- Cart Trigger & CTA -->
+      <div class="flex items-center space-x-3">
+        <button id="open-cart-btn" class="relative px-3.5 py-2 rounded-xl bg-zinc-900 border border-savage-border hover:border-zinc-600 text-zinc-300 hover:text-white transition flex items-center space-x-2 text-xs font-display font-bold">
+          <svg class="w-4 h-4 text-savage-toxic" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+          <span class="hidden sm:inline">CRATE</span>
+          <span id="cart-count-badge" class="bg-savage-toxic text-black font-black text-[10px] px-1.5 py-0.5 rounded-full">0</span>
+        </button>
+
+        <a href="#flavors" class="hidden sm:inline-flex px-5 py-2.5 rounded-xl bg-savage-toxic hover:bg-emerald-400 text-black font-display font-black text-xs tracking-wider uppercase transition transform hover:-translate-y-0.5 active:translate-y-0 shadow-[0_0_20px_rgba(0,255,102,0.3)]">
+          GET SAVAGE
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION (Stage 01) -->
+  <main id="hero" class="min-h-screen pt-28 pb-16 flex items-center relative z-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      
+      <!-- Left Column: Aggressive Typography & Spec Highlights -->
+      <div class="lg:col-span-4 flex flex-col justify-center space-y-6 order-2 lg:order-1 text-center lg:text-left">
+        <div class="inline-flex items-center space-x-2 self-center lg:self-start px-3 py-1 rounded-full bg-zinc-900/90 border border-savage-border text-xs font-mono text-zinc-400">
+          <span class="w-2 h-2 rounded-full bg-savage-toxic animate-pulse"></span>
+          <span>BIO-ENGINEERED PERFORMANCE FUEL</span>
+        </div>
+
+        <h1 class="text-5xl sm:text-6xl xl:text-7xl font-display font-black leading-[0.9] tracking-tight text-white uppercase">
+          RAW <br>
+          <span id="hero-title-accent" class="text-savage-toxic glow-toxic transition-all duration-500">MUTATION</span><br>
+          ENERGY.
+        </h1>
+
+        <p class="text-zinc-400 text-base sm:text-lg max-w-md mx-auto lg:mx-0 font-medium">
+          Zero sugar. 200mg natural green-coffee caffeine. Packed with Lion’s Mane & L-Theanine for relentless, razor-sharp focus with zero crash.
+        </p>
+
+        <!-- Spec Badges -->
+        <div class="grid grid-cols-3 gap-3 pt-2">
+          <div class="bg-zinc-900/80 border border-savage-border p-3 rounded-xl text-center backdrop-blur-sm">
+            <span class="block text-2xl sm:text-3xl font-display font-black text-white">0G</span>
+            <span class="text-[10px] font-mono uppercase tracking-wider text-zinc-400">SUGAR</span>
+          </div>
+          <div class="bg-zinc-900/80 border border-savage-border p-3 rounded-xl text-center backdrop-blur-sm">
+            <span class="block text-2xl sm:text-3xl font-display font-black text-savage-toxic">200<span class="text-xs">MG</span></span>
+            <span class="text-[10px] font-mono uppercase tracking-wider text-zinc-400">CAFFEINE</span>
+          </div>
+          <div class="bg-zinc-900/80 border border-savage-border p-3 rounded-xl text-center backdrop-blur-sm">
+            <span class="block text-2xl sm:text-3xl font-display font-black text-white">100%</span>
+            <span class="text-[10px] font-mono uppercase tracking-wider text-zinc-400">FOCUS</span>
+          </div>
+        </div>
+
+        <!-- Call to Action Buttons -->
+        <div class="flex flex-col sm:flex-row items-center gap-4 pt-4 justify-center lg:justify-start">
+          <button id="hero-buy-btn" class="w-full sm:w-auto px-8 py-4 bg-savage-toxic hover:bg-emerald-400 text-black font-display font-black text-base uppercase tracking-wider rounded-xl transition shadow-[0_0_30px_rgba(0,255,102,0.4)] transform hover:-translate-y-0.5 active:translate-y-0">
+            ORDER 12-PACK CRATE
+          </button>
+          <a href="#flavors" class="w-full sm:w-auto px-6 py-4 bg-zinc-900/90 hover:bg-zinc-800 border border-savage-border text-white font-display font-bold text-sm uppercase tracking-wider rounded-xl transition text-center">
+            DISCOVER FLAVORS
+          </a>
+        </div>
+      </div>
+
+      <!-- Center 3D Stage (Interactive Viewport Hitbox over Fixed 3D Can) -->
+      <div class="lg:col-span-5 h-[480px] sm:h-[580px] lg:h-[650px] relative flex items-center justify-center order-1 lg:order-2">
+        
+        <!-- Interactive 3D Hitbox allowing user to grab & spin the can -->
+        <div id="can-interaction-zone" class="w-full h-full cursor-grab active:cursor-grabbing relative flex items-center justify-center pointer-events-auto">
+          <!-- Ambient Radial Glow Behind Can -->
+          <div id="ambient-aura" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[420px] bg-savage-toxic/15 rounded-full blur-[120px] pointer-events-none transition-all duration-700"></div>
+        </div>
+
+        <!-- 3D Instruction Badge & Scroll Prompt -->
+        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none bg-black/75 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 flex items-center space-x-2.5 shadow-xl">
+          <svg class="w-3.5 h-3.5 text-savage-toxic animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+          <span class="text-[11px] font-display font-bold tracking-wider uppercase text-zinc-300">Scroll down to animate 3D can</span>
+        </div>
+
+        <!-- Pop Can / Fizz Burst Quick Trigger Button -->
+        <button id="pop-can-btn" class="absolute top-6 right-4 sm:right-6 bg-zinc-900/90 hover:bg-zinc-800 border border-savage-toxic/40 text-savage-toxic hover:text-white px-3.5 py-2 rounded-xl text-xs font-display font-bold uppercase tracking-wider flex items-center space-x-2 backdrop-blur-md shadow-lg transition active:scale-95 z-20">
+          <span class="text-base">⚡</span>
+          <span>Crack Can (Sound)</span>
+        </button>
+      </div>
+
+      <!-- Right Column: Interactive Flavor Switcher Deck -->
+      <div class="lg:col-span-3 flex flex-col justify-center space-y-4 order-3 relative z-20">
+        <div class="border-b border-savage-border pb-2 flex items-center justify-between">
+          <span class="text-xs font-display font-bold uppercase tracking-widest text-zinc-400">FLAVOR MUTATION</span>
+          <span class="text-[10px] font-mono text-savage-toxic uppercase">CLICK TO RESKIN</span>
+        </div>
+
+        <!-- Flavor Card 1: Raw Toxic -->
+        <button data-flavor="toxic" class="flavor-selector-btn active w-full p-4 rounded-xl border border-white/80 bg-white/10 text-left flex items-center justify-between transition-all group">
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-savage-toxic"></span>
+              <span class="font-display font-black text-sm text-white group-hover:text-savage-toxic">RAW TOXIC</span>
+            </div>
+            <span class="text-xs text-zinc-400 block mt-1">Sour Green Apple + Electrified Citrus</span>
+          </div>
+          <span class="text-xs font-mono text-savage-toxic font-bold">MUT-01</span>
+        </button>
+
+        <!-- Flavor Card 2: Cyber Venom -->
+        <button data-flavor="venom" class="flavor-selector-btn w-full p-4 rounded-xl border border-savage-border bg-savage-card text-left flex items-center justify-between transition-all hover:bg-savage-card/80 group">
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-savage-cyan"></span>
+              <span class="font-display font-black text-sm text-white group-hover:text-savage-cyan">CYBER VENOM</span>
+            </div>
+            <span class="text-xs text-zinc-400 block mt-1">Glacier Blue Raspberry + Frost Menthol</span>
+          </div>
+          <span class="text-xs font-mono text-savage-cyan font-bold">MUT-02</span>
+        </button>
+
+        <!-- Flavor Card 3: Blood Mutation -->
+        <button data-flavor="blood" class="flavor-selector-btn w-full p-4 rounded-xl border border-savage-border bg-savage-card text-left flex items-center justify-between transition-all hover:bg-savage-card/80 group">
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-savage-blood"></span>
+              <span class="font-display font-black text-sm text-white group-hover:text-savage-blood">BLOOD MUTATION</span>
+            </div>
+            <span class="text-xs text-zinc-400 block mt-1">Crimson Blood Orange + Dragonfruit</span>
+          </div>
+          <span class="text-xs font-mono text-savage-blood font-bold">MUT-03</span>
+        </button>
+
+        <!-- Flavor Card 4: Void Zero -->
+        <button data-flavor="void" class="flavor-selector-btn w-full p-4 rounded-xl border border-savage-border bg-savage-card text-left flex items-center justify-between transition-all hover:bg-savage-card/80 group">
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-savage-void"></span>
+              <span class="font-display font-black text-sm text-white group-hover:text-savage-void">VOID ZERO</span>
+            </div>
+            <span class="text-xs text-zinc-400 block mt-1">Midnight Blackberry + Wild Acai</span>
+          </div>
+          <span class="text-xs font-mono text-savage-void font-bold">MUT-04</span>
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FLAVORS SHOWCASE ARSENAL (Stage 02) -->
+  <section id="flavors" class="py-24 border-t border-savage-border relative z-20 bg-black/75 backdrop-blur-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+        <div>
+          <span class="text-xs font-display font-bold text-savage-toxic tracking-[0.3em] uppercase">STAGE 02 /// THE ARSENAL</span>
+          <h2 class="font-display font-black text-4xl sm:text-5xl text-white uppercase mt-2">
+            CHOOSE YOUR <span class="text-zinc-500">POISON</span>.
+          </h2>
+        </div>
+        <p class="text-zinc-400 max-w-md text-sm sm:text-base font-medium">
+          Zero sugar fillers. Zero crash. Notice the can orbit smoothly as you review each flavor mutation.
+        </p>
+      </div>
+
+      <!-- 4 Flavors Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- Flavor Card: Raw Toxic -->
+        <div class="bg-savage-card border border-savage-border hover:border-savage-toxic rounded-2xl p-6 flex flex-col justify-between transition duration-300 group hover:-translate-y-1">
+          <div>
+            <div class="flex justify-between items-center mb-4">
+              <span class="text-xs font-mono text-savage-toxic uppercase font-bold">MUTATION #01</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-savage-toxic/10 text-savage-toxic border border-savage-toxic/30">ORIGINAL</span>
+            </div>
+            <h3 class="font-display font-black text-2xl text-white group-hover:text-savage-toxic transition mb-2">RAW TOXIC</h3>
+            <p class="text-zinc-400 text-sm mb-6">Crisp, shocking sour green apple infused with high-frequency citrus electricity.</p>
+            <ul class="text-xs font-mono text-zinc-400 space-y-1.5 border-t border-zinc-800/80 pt-4">
+              <li class="flex justify-between"><span>Caffeine:</span><span class="text-white">200mg</span></li>
+              <li class="flex justify-between"><span>Taurine:</span><span class="text-white">1000mg</span></li>
+              <li class="flex justify-between"><span>Sugar:</span><span class="text-savage-toxic">0 Grams</span></li>
+            </ul>
+          </div>
+          <div class="pt-6 mt-6 border-t border-zinc-800/80 flex items-center justify-between">
+            <span class="font-display font-bold text-lg text-white">$34.99 <span class="text-xs text-zinc-500 font-sans">/ 12-pk</span></span>
+            <button onclick="addFlavorToCart('toxic')" class="px-4 py-2 bg-zinc-800 hover:bg-savage-toxic hover:text-black rounded-lg text-xs font-display font-black uppercase transition">ADD CRATE</button>
+          </div>
+        </div>
+
+        <!-- Flavor Card: Cyber Venom -->
+        <div class="bg-savage-card border border-savage-border hover:border-savage-cyan rounded-2xl p-6 flex flex-col justify-between transition duration-300 group hover:-translate-y-1">
+          <div>
+            <div class="flex justify-between items-center mb-4">
+              <span class="text-xs font-mono text-savage-cyan uppercase font-bold">MUTATION #02</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-savage-cyan/10 text-savage-cyan border border-savage-cyan/30">FROST</span>
+            </div>
+            <h3 class="font-display font-black text-2xl text-white group-hover:text-savage-cyan transition mb-2">CYBER VENOM</h3>
+            <p class="text-zinc-400 text-sm mb-6">Glacier-cold blue raspberry spiked with sub-zero menthol crystallization.</p>
+            <ul class="text-xs font-mono text-zinc-400 space-y-1.5 border-t border-zinc-800/80 pt-4">
+              <li class="flex justify-between"><span>Caffeine:</span><span class="text-white">200mg</span></li>
+              <li class="flex justify-between"><span>L-Theanine:</span><span class="text-white">150mg</span></li>
+              <li class="flex justify-between"><span>Sugar:</span><span class="text-savage-cyan">0 Grams</span></li>
+            </ul>
+          </div>
+          <div class="pt-6 mt-6 border-t border-zinc-800/80 flex items-center justify-between">
+            <span class="font-display font-bold text-lg text-white">$34.99 <span class="text-xs text-zinc-500 font-sans">/ 12-pk</span></span>
+            <button onclick="addFlavorToCart('venom')" class="px-4 py-2 bg-zinc-800 hover:bg-savage-cyan hover:text-black rounded-lg text-xs font-display font-black uppercase transition">ADD CRATE</button>
+          </div>
+        </div>
+
+        <!-- Flavor Card: Blood Mutation -->
+        <div class="bg-savage-card border border-savage-border hover:border-savage-blood rounded-2xl p-6 flex flex-col justify-between transition duration-300 group hover:-translate-y-1">
+          <div>
+            <div class="flex justify-between items-center mb-4">
+              <span class="text-xs font-mono text-savage-blood uppercase font-bold">MUTATION #03</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-savage-blood/10 text-savage-blood border border-savage-blood/30">SAVAGE</span>
+            </div>
+            <h3 class="font-display font-black text-2xl text-white group-hover:text-savage-blood transition mb-2">BLOOD MUTATION</h3>
+            <p class="text-zinc-400 text-sm mb-6">Deep blood orange ripped with exotic dragonfruit extract and explosive tartness.</p>
+            <ul class="text-xs font-mono text-zinc-400 space-y-1.5 border-t border-zinc-800/80 pt-4">
+              <li class="flex justify-between"><span>Caffeine:</span><span class="text-white">200mg</span></li>
+              <li class="flex justify-between"><span>Ginseng:</span><span class="text-white">400mg</span></li>
+              <li class="flex justify-between"><span>Sugar:</span><span class="text-savage-blood">0 Grams</span></li>
+            </ul>
+          </div>
+          <div class="pt-6 mt-6 border-t border-zinc-800/80 flex items-center justify-between">
+            <span class="font-display font-bold text-lg text-white">$34.99 <span class="text-xs text-zinc-500 font-sans">/ 12-pk</span></span>
+            <button onclick="addFlavorToCart('blood')" class="px-4 py-2 bg-zinc-800 hover:bg-savage-blood hover:text-black rounded-lg text-xs font-display font-black uppercase transition">ADD CRATE</button>
+          </div>
+        </div>
+
+        <!-- Flavor Card: Void Zero -->
+        <div class="bg-savage-card border border-savage-border hover:border-savage-void rounded-2xl p-6 flex flex-col justify-between transition duration-300 group hover:-translate-y-1">
+          <div>
+            <div class="flex justify-between items-center mb-4">
+              <span class="text-xs font-mono text-savage-void uppercase font-bold">MUTATION #04</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-savage-void/10 text-savage-void border border-savage-void/30">NIGHT</span>
+            </div>
+            <h3 class="font-display font-black text-2xl text-white group-hover:text-savage-void transition mb-2">VOID ZERO</h3>
+            <p class="text-zinc-400 text-sm mb-6">Dark midnight blackberry coupled with wild acai berry and ultra electrolytes.</p>
+            <ul class="text-xs font-mono text-zinc-400 space-y-1.5 border-t border-zinc-800/80 pt-4">
+              <li class="flex justify-between"><span>Caffeine:</span><span class="text-white">200mg</span></li>
+              <li class="flex justify-between"><span>Lion's Mane:</span><span class="text-white">500mg</span></li>
+              <li class="flex justify-between"><span>Sugar:</span><span class="text-savage-void">0 Grams</span></li>
+            </ul>
+          </div>
+          <div class="pt-6 mt-6 border-t border-zinc-800/80 flex items-center justify-between">
+            <span class="font-display font-bold text-lg text-white">$34.99 <span class="text-xs text-zinc-500 font-sans">/ 12-pk</span></span>
+            <button onclick="addFlavorToCart('void')" class="px-4 py-2 bg-zinc-800 hover:bg-savage-void hover:text-black rounded-lg text-xs font-display font-black uppercase transition">ADD CRATE</button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FORMULA LAB / COMPARISON MATRIX (Stage 03) -->
+  <section id="formula" class="py-24 border-t border-savage-border relative z-20 bg-savage-dark/85 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-xs font-display font-bold text-savage-toxic tracking-[0.3em] uppercase">STAGE 03 /// BIO-ENGINEERED PERFORMANCE</span>
+        <h2 class="font-display font-black text-4xl sm:text-5xl text-white uppercase mt-2">
+          THE SAVAGE FORMULA
+        </h2>
+        <p class="text-zinc-400 text-base mt-4">
+          Can tilts into inspection mode. Examine the high-pressure aluminum tab and pure nootropic formulation below.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+        
+        <!-- Ingredient 1 -->
+        <div class="bg-savage-card border border-savage-border p-8 rounded-2xl relative overflow-hidden group hover:border-zinc-700 transition">
+          <div class="w-12 h-12 rounded-xl bg-savage-toxic/10 border border-savage-toxic/30 text-savage-toxic flex items-center justify-center font-display font-black text-xl mb-6">
+            01
+          </div>
+          <h3 class="font-display font-black text-xl text-white mb-2">ORGANIC GREEN COFFEE</h3>
+          <p class="text-zinc-400 text-sm leading-relaxed mb-4">
+            200mg extracted cleanly from unroasted green coffee beans. Eliminates the harsh jitter peaks and crash valleys caused by synthetic caffeine anhydrous.
+          </p>
+          <span class="text-[10px] font-mono text-savage-toxic tracking-wider uppercase">CLEAN METABOLIC ABSORPTION</span>
+        </div>
+
+        <!-- Ingredient 2 -->
+        <div class="bg-savage-card border border-savage-border p-8 rounded-2xl relative overflow-hidden group hover:border-zinc-700 transition">
+          <div class="w-12 h-12 rounded-xl bg-savage-cyan/10 border border-savage-cyan/30 text-savage-cyan flex items-center justify-center font-display font-black text-xl mb-6">
+            02
+          </div>
+          <h3 class="font-display font-black text-xl text-white mb-2">NEURO-LION'S MANE</h3>
+          <p class="text-zinc-400 text-sm leading-relaxed mb-4">
+            500mg concentrated Hericium erinaceus mushroom extract. Stimulates Nerve Growth Factor (NGF) for heightened cognitive processing and visual reaction times.
+          </p>
+          <span class="text-[10px] font-mono text-savage-cyan tracking-wider uppercase">NEUROGENESIS & SYNAPSE ACCELERATOR</span>
+        </div>
+
+        <!-- Ingredient 3 -->
+        <div class="bg-savage-card border border-savage-border p-8 rounded-2xl relative overflow-hidden group hover:border-zinc-700 transition">
+          <div class="w-12 h-12 rounded-xl bg-savage-blood/10 border border-savage-blood/30 text-savage-blood flex items-center justify-center font-display font-black text-xl mb-6">
+            03
+          </div>
+          <h3 class="font-display font-black text-xl text-white mb-2">ELECTROLYTE MATRIX</h3>
+          <p class="text-zinc-400 text-sm leading-relaxed mb-4">
+            Chelated Magnesium, Himalayan Pink Salt, and Potassium Citrate. Formulated at the exact osmotic ratio to maximize intramuscular hydration under extreme strain.
+          </p>
+          <span class="text-[10px] font-mono text-savage-blood tracking-wider uppercase">HYPER-OSMOTIC CELLULAR PUMP</span>
+        </div>
+
+      </div>
+
+      <!-- Savagee vs Traditional Energy Matrix -->
+      <div class="bg-black/90 border border-savage-border rounded-2xl overflow-hidden shadow-2xl">
+        <div class="p-6 bg-zinc-950 border-b border-savage-border flex items-center justify-between">
+          <span class="font-display font-black text-sm uppercase tracking-wider text-white">BIOCHEMICAL MATRIX COMPARISON</span>
+          <span class="text-xs font-mono text-savage-toxic">INDEPENDENT LAB TESTED</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="text-xs font-display uppercase tracking-wider text-zinc-500 border-b border-zinc-800">
+              <tr>
+                <th class="p-4 sm:p-5">METRIC / COMPOUND</th>
+                <th class="p-4 sm:p-5 text-savage-toxic font-black">SAVAGEE BIO-ENERGY</th>
+                <th class="p-4 sm:p-5 text-zinc-500">STANDARD 'BULL' CAN</th>
+                <th class="p-4 sm:p-5 text-zinc-500">GENERIC ESPORTS POWDER</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-900 font-mono text-xs text-zinc-300">
+              <tr>
+                <td class="p-4 sm:p-5 font-bold text-white">Added Sugar / High Fructose</td>
+                <td class="p-4 sm:p-5 text-savage-toxic font-bold">0g (Pure Stevia & Erythritol)</td>
+                <td class="p-4 sm:p-5 text-red-400">27g - 54g (Insulin Spike)</td>
+                <td class="p-4 sm:p-5">0g (Maltodextrin Fillers)</td>
+              </tr>
+              <tr>
+                <td class="p-4 sm:p-5 font-bold text-white">Active Caffeine Source</td>
+                <td class="p-4 sm:p-5 text-savage-toxic font-bold">200mg Organic Green Coffee</td>
+                <td class="p-4 sm:p-5">160mg Synthetic Anhydrous</td>
+                <td class="p-4 sm:p-5">150mg Chemical Blend</td>
+              </tr>
+              <tr>
+                <td class="p-4 sm:p-5 font-bold text-white">Nootropic Focus Stacks</td>
+                <td class="p-4 sm:p-5 text-savage-toxic font-bold">Lion's Mane + L-Theanine</td>
+                <td class="p-4 sm:p-5 text-zinc-600">None</td>
+                <td class="p-4 sm:p-5 text-zinc-400">Underdosed Trace Dusting</td>
+              </tr>
+              <tr>
+                <td class="p-4 sm:p-5 font-bold text-white">Afternoon Energy Crash</td>
+                <td class="p-4 sm:p-5 text-savage-toxic font-bold">0% (Sustained 6-Hour Arc)</td>
+                <td class="p-4 sm:p-5 text-red-400">Severe After 90 Minutes</td>
+                <td class="p-4 sm:p-5 text-yellow-400">Moderate Crash</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SAVAGE SQUAD (Athletes, Gamers & Creators - Stage 04) -->
+  <section id="squad" class="py-24 border-t border-savage-border relative z-20 bg-black/85 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+        <div>
+          <span class="text-xs font-display font-bold text-savage-toxic tracking-[0.3em] uppercase">STAGE 04 /// FUELING THE RELENTLESS</span>
+          <h2 class="font-display font-black text-4xl sm:text-5xl text-white uppercase mt-2">
+            THE SAVAGE SQUAD
+          </h2>
+        </div>
+        <p class="text-zinc-400 max-w-md text-sm font-medium">
+          World champions, downhill freeriders, and Twitch record breakers powered exclusively by Savagee.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Athlete 1 -->
+        <div class="bg-savage-card border border-savage-border rounded-2xl overflow-hidden group hover:border-savage-toxic transition duration-300">
+          <div class="h-64 bg-zinc-900 relative flex items-center justify-center overflow-hidden">
+            <!-- Geometric stylized athlete avatar silhouette -->
+            <div class="w-full h-full bg-gradient-to-tr from-zinc-950 via-zinc-900 to-zinc-800 flex items-center justify-center p-8">
+              <span class="font-display font-black text-7xl text-zinc-700/40 group-hover:scale-110 transition duration-500">APEX</span>
+            </div>
+            <div class="absolute bottom-3 left-3 bg-black/80 px-2.5 py-1 rounded border border-white/10 text-[10px] font-mono text-savage-toxic uppercase">
+              FPS WORLD CHAMPION
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="font-display font-black text-2xl text-white">KAI 'VOX' RYDER</h3>
+            <p class="text-xs font-mono text-zinc-500 mb-3">GLOBAL ESPORTS INVITATIONAL MVP</p>
+            <p class="text-sm text-zinc-400">"In high-stakes finals, millisecond reaction is life or death. Savagee Cyber Venom keeps my crosshair locked without trembling fingers."</p>
+          </div>
+        </div>
+
+        <!-- Athlete 2 -->
+        <div class="bg-savage-card border border-savage-border rounded-2xl overflow-hidden group hover:border-savage-blood transition duration-300">
+          <div class="h-64 bg-zinc-900 relative flex items-center justify-center overflow-hidden">
+            <div class="w-full h-full bg-gradient-to-tr from-zinc-950 via-zinc-900 to-zinc-800 flex items-center justify-center p-8">
+              <span class="font-display font-black text-7xl text-zinc-700/40 group-hover:scale-110 transition duration-500">DRIFT</span>
+            </div>
+            <div class="absolute bottom-3 left-3 bg-black/80 px-2.5 py-1 rounded border border-white/10 text-[10px] font-mono text-savage-blood uppercase">
+              REDBULL CLIFF RIDER
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="font-display font-black text-2xl text-white">MAYA 'VORTEX' CHEN</h3>
+            <p class="text-xs font-mono text-zinc-500 mb-3">URBAN DOWNHILL RECORD HOLDER</p>
+            <p class="text-sm text-zinc-400">"Dropping down 60-degree cliffs at 85 km/h requires pure adrenaline harmony. Blood Mutation gives me the animal aggression I need."</p>
+          </div>
+        </div>
+
+        <!-- Athlete 3 -->
+        <div class="bg-savage-card border border-savage-border rounded-2xl overflow-hidden group hover:border-savage-cyan transition duration-300">
+          <div class="h-64 bg-zinc-900 relative flex items-center justify-center overflow-hidden">
+            <div class="w-full h-full bg-gradient-to-tr from-zinc-950 via-zinc-900 to-zinc-800 flex items-center justify-center p-8">
+              <span class="font-display font-black text-7xl text-zinc-700/40 group-hover:scale-110 transition duration-500">CYBER</span>
+            </div>
+            <div class="absolute bottom-3 left-3 bg-black/80 px-2.5 py-1 rounded border border-white/10 text-[10px] font-mono text-savage-cyan uppercase">
+              SPEEDRUN WORLD RECORD
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="font-display font-black text-2xl text-white">DANTE 'ZERO' ROSSI</h3>
+            <p class="text-xs font-mono text-zinc-500 mb-3">ELDEN RING ANY% RECORD</p>
+            <p class="text-sm text-zinc-400">"A 14-hour marathon stream destroys ordinary gamers. Void Zero gives clean mental endurance from minute 1 to minute 840."</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- AUDIO / SOUND LAB CALLOUT (Stage 05) -->
+  <section class="py-16 border-t border-savage-border bg-gradient-to-b from-transparent to-zinc-950 relative z-20">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <span class="text-xs font-display font-bold text-savage-toxic tracking-[0.3em] uppercase">STAGE 05 /// AUDITORY EXPERIENCE</span>
+      <h2 class="font-display font-black text-3xl sm:text-5xl text-white uppercase mt-2 mb-4">
+        HEAR THE CRACK OF HIGH PRESSURE
+      </h2>
+      <p class="text-zinc-400 text-sm sm:text-base max-w-xl mx-auto mb-8">
+        Built with the Web Audio Synthesizer (Tone.js). Crack open our aluminum can and listen to the pressurized carbonation burst.
+      </p>
+
+      <div class="flex flex-wrap items-center justify-center gap-4">
+        <button id="audio-crack-cta" class="px-8 py-4 bg-zinc-900 hover:bg-zinc-800 border-2 border-savage-toxic text-savage-toxic hover:text-white font-display font-black text-sm uppercase tracking-wider rounded-xl transition shadow-[0_0_25px_rgba(0,255,102,0.3)] flex items-center space-x-3 active:scale-95">
+          <span class="text-xl">⚡</span>
+          <span>CRACK THE CAN NOW (AUDIO)</span>
+        </button>
+        <button id="order-crate-cta" class="px-8 py-4 bg-savage-toxic hover:bg-emerald-400 text-black font-display font-black text-sm uppercase tracking-wider rounded-xl transition shadow-[0_0_25px_rgba(0,255,102,0.4)] active:scale-95">
+          CLAIM 12-PACK CRATE ($34.99)
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE-OVER SHOPPING CRATE DRAWER -->
+  <div id="cart-drawer" class="fixed inset-0 z-50 pointer-events-none transition-opacity duration-300 opacity-0">
+    <!-- Backdrop overlay -->
+    <div id="cart-backdrop" class="absolute inset-0 bg-black/75 backdrop-blur-sm pointer-events-none transition-opacity"></div>
+    
+    <!-- Drawer Panel -->
+    <aside id="cart-panel" class="absolute top-0 right-0 bottom-0 w-full max-w-md bg-savage-dark border-l border-savage-border shadow-2xl p-6 flex flex-col justify-between transform translate-x-full transition-transform duration-300 pointer-events-auto">
+      
+      <!-- Drawer Header -->
+      <div>
+        <div class="flex items-center justify-between border-b border-savage-border pb-4 mb-6">
+          <div class="flex items-center space-x-2">
+            <span class="w-3 h-3 rounded-full bg-savage-toxic animate-pulse"></span>
+            <h2 class="font-display font-black text-xl text-white uppercase tracking-wider">YOUR CRATE</h2>
+          </div>
+          <button id="close-cart-btn" class="p-2 text-zinc-400 hover:text-white rounded-lg transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Cart Items List Container -->
+        <div id="cart-items-container" class="space-y-4 max-h-[50vh] overflow-y-auto pr-1">
+          <!-- Populated dynamically via JavaScript -->
+        </div>
+      </div>
+
+      <!-- Drawer Footer & Checkout Button -->
+      <div class="border-t border-savage-border pt-6 space-y-4">
+        <div class="space-y-1.5 text-sm font-mono">
+          <div class="flex justify-between text-zinc-400">
+            <span>SUBTOTAL:</span>
+            <span id="cart-subtotal" class="text-white font-bold">$0.00</span>
+          </div>
+          <div class="flex justify-between text-zinc-400">
+            <span>EXPEDITED COLD SHIPPING:</span>
+            <span class="text-savage-toxic font-bold">FREE (OVER $30)</span>
+          </div>
+          <div class="flex justify-between text-base font-display font-black text-white pt-2 border-t border-zinc-800">
+            <span>TOTAL AMOUNT:</span>
+            <span id="cart-total" class="text-savage-toxic font-bold">$0.00</span>
+          </div>
+        </div>
+
+        <button id="checkout-btn" class="w-full py-4 bg-savage-toxic hover:bg-emerald-400 text-black font-display font-black text-base uppercase tracking-wider rounded-xl transition shadow-[0_0_25px_rgba(0,255,102,0.4)] disabled:opacity-50 disabled:cursor-not-allowed">
+          CONFIRM CRATE ORDER
+        </button>
+
+        <p class="text-center text-[10px] font-mono text-zinc-500 uppercase">
+          GUARANTEED COLD-CHAIN CARRIER DISPATCH WITHIN 24 HOURS
+        </p>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- CHECKOUT SUCCESS MODAL (replaces alert) -->
+  <div id="checkout-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div class="bg-savage-card border border-savage-toxic max-w-md w-full p-6 sm:p-8 rounded-2xl shadow-[0_0_50px_rgba(0,255,102,0.3)] text-center">
+      <div class="w-16 h-16 mx-auto rounded-full bg-savage-toxic/20 border-2 border-savage-toxic text-savage-toxic flex items-center justify-center text-3xl mb-4 animate-bounce">
+        ✓
+      </div>
+      <h3 class="font-display font-black text-2xl text-white uppercase mb-2">CRATE DEPLOYED!</h3>
+      <p class="text-zinc-400 text-sm mb-6">
+        Order <span class="font-mono text-savage-toxic font-bold">#SVG-84910</span> received. Your high-voltage fuel is in refrigeration and dispatched for delivery.
+      </p>
+      <button id="close-modal-btn" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-display font-bold uppercase rounded-xl transition">
+        BACK TO COMMAND CENTER
+      </button>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 bg-black/90 border border-savage-toxic text-white px-5 py-3 rounded-xl shadow-2xl text-xs font-mono flex items-center space-x-3 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+    <span class="w-2 h-2 rounded-full bg-savage-toxic animate-ping"></span>
+    <span id="toast-message">Message</span>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-savage-border bg-black py-16 relative z-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+        
+        <div class="space-y-4">
+          <div class="flex items-center space-x-2">
+            <span class="font-display font-black text-2xl text-white tracking-tighter">SAVAGEE<span class="text-savage-toxic">.</span></span>
+          </div>
+          <p class="text-zinc-500 text-xs leading-relaxed">
+            Bio-engineered carbonated fuel formulated for pro gamers, extreme athletes, and nocturnal creators. Distributed globally.
+          </p>
+          <div class="text-[10px] font-mono text-zinc-600 uppercase">
+            FDA REGISTERED FACILITY /// ZERO ARTIFICIAL PRESERVATIVES
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-display font-bold text-xs uppercase tracking-widest text-zinc-300 mb-4">ARSENAL</h4>
+          <ul class="text-xs space-y-2 font-mono text-zinc-500">
+            <li><a href="#flavors" class="hover:text-savage-toxic transition">Raw Toxic (Sour Apple)</a></li>
+            <li><a href="#flavors" class="hover:text-savage-cyan transition">Cyber Venom (Blue Razz)</a></li>
+            <li><a href="#flavors" class="hover:text-savage-blood transition">Blood Mutation (Blood Orange)</a></li>
+            <li><a href="#flavors" class="hover:text-savage-void transition">Void Zero (Wild Berry)</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-display font-bold text-xs uppercase tracking-widest text-zinc-300 mb-4">COMMUNITY</h4>
+          <ul class="text-xs space-y-2 font-mono text-zinc-500">
+            <li><a href="#squad" class="hover:text-white transition">Savage Squad Roster</a></li>
+            <li><a href="#" class="hover:text-white transition">Twitch Sponsorship Program</a></li>
+            <li><a href="#" class="hover:text-white transition">Downhill Invitational 2026</a></li>
+            <li><a href="#" class="hover:text-white transition">Campus Ambassador Ops</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-display font-bold text-xs uppercase tracking-widest text-zinc-300 mb-4">SUBSCRIBE TO DROPS</h4>
+          <p class="text-xs text-zinc-500 mb-3 font-medium">Get priority access to limited seasonal mutation flavors.</p>
+          <form onsubmit="handleNewsletter(event)" class="space-y-2">
+            <input type="email" required placeholder="ENTER INTEL EMAIL" class="w-full bg-zinc-900 border border-savage-border px-3 py-2 text-xs rounded-lg text-white placeholder-zinc-600 focus:outline-none focus:border-savage-toxic font-mono">
+            <button type="submit" class="w-full bg-zinc-800 hover:bg-savage-toxic hover:text-black text-white font-display font-bold text-xs uppercase py-2 rounded-lg transition">JOIN DROP LIST</button>
+          </form>
+        </div>
+
+      </div>
+
+      <div class="border-t border-zinc-900 pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-600 font-mono">
+        <div>© 2026 SAVAGEE BEVERAGE CORP. ALL RIGHTS RESERVED.</div>
+        <div class="flex space-x-6 mt-4 sm:mt-0">
+          <a href="#" class="hover:text-zinc-400">PRIVACY PROTOCOL</a>
+          <a href="#" class="hover:text-zinc-400">TERMS OF CONSUMPTION</a>
+          <a href="#" class="hover:text-zinc-400">LAB RESULTS</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================= -->
+  <!-- JAVASCRIPT: THREE.JS 3D ENGINE, TONE.JS SOUND, SCROLLYTELLING & COMMERCE -->
+  <!-- ========================================================================= -->
+  <script>
+    // --- Synthesizer for Can Crack Sound (Tone.js) ---
+    let soundInitialized = false;
+
+    async function playCanCrackSound() {
+      try {
+        if (!soundInitialized) {
+          await Tone.start();
+          soundInitialized = true;
+        }
+
+        const now = Tone.now();
+
+        // 1. Aluminum Tab Snap (Sharp Pop)
+        const snapSynth = new Tone.MembraneSynth({
+          pitchDecay: 0.008,
+          octaves: 3,
+          oscillator: { type: "triangle" },
+          envelope: { attack: 0.001, decay: 0.08, sustain: 0, release: 0.05 }
+        }).toDestination();
+        snapSynth.triggerAttackRelease("C5", "32n", now, 1.2);
+
+        // 2. High Pressure CO2 Fizz Release (White Noise Hiss)
+        const noiseFilter = new Tone.AutoFilter({
+          frequency: 4,
+          baseFrequency: 1200,
+          octaves: 2.5
+        }).toDestination().start(now);
+
+        const hiss = new Tone.NoiseSynth({
+          noise: { type: "white" },
+          envelope: { attack: 0.002, decay: 0.35, sustain: 0.04, release: 0.25 }
+        }).connect(noiseFilter);
+        hiss.triggerAttackRelease("16n", now + 0.01, 0.85);
+
+        // 3. Sub-bass resonance thump
+        const subSynth = new Tone.MembraneSynth({
+          pitchDecay: 0.05,
+          octaves: 4,
+          envelope: { attack: 0.001, decay: 0.2, sustain: 0, release: 0.1 }
+        }).toDestination();
+        subSynth.triggerAttackRelease("F1", "16n", now + 0.02, 0.9);
+
+      } catch (err) {
+        console.warn("Tone.js audio trigger suppressed:", err);
+      }
+    }
+
+    // --- Flavor Data & Color Palettes ---
+    const FLAVOR_CONFIG = {
+      toxic: {
+        name: "RAW TOXIC",
+        code: "MUT-01",
+        primaryHex: 0x00FF66,
+        primaryCss: "#00FF66",
+        ambientCss: "rgba(0, 255, 102, 0.15)",
+        darkColor: "#051f0f",
+        accentText: "#00FF66",
+        glowClass: "glow-toxic",
+        subtext: "SOUR GREEN APPLE /// 200MG CAFFEINE"
+      },
+      venom: {
+        name: "CYBER VENOM",
+        code: "MUT-02",
+        primaryHex: 0x00F0FF,
+        primaryCss: "#00F0FF",
+        ambientCss: "rgba(0, 240, 255, 0.15)",
+        darkColor: "#031724",
+        accentText: "#00F0FF",
+        glowClass: "glow-cyan",
+        subtext: "GLACIER BLUE RASPBERRY /// ZERO CRASH"
+      },
+      blood: {
+        name: "BLOOD MUTATION",
+        code: "MUT-03",
+        primaryHex: 0xFF003C,
+        primaryCss: "#FF003C",
+        ambientCss: "rgba(255, 0, 60, 0.15)",
+        darkColor: "#240409",
+        accentText: "#FF003C",
+        glowClass: "glow-blood",
+        subtext: "CRIMSON DRAGONFRUIT /// ANIMAL ENERGY"
+      },
+      void: {
+        name: "VOID ZERO",
+        code: "MUT-04",
+        primaryHex: 0xA855F7,
+        primaryCss: "#A855F7",
+        ambientCss: "rgba(168, 85, 247, 0.15)",
+        darkColor: "#170424",
+        accentText: "#A855F7",
+        glowClass: "glow-void",
+        subtext: "MIDNIGHT BLACKBERRY /// ZERO SUGAR"
+      }
+    };
+
+    let currentFlavorKey = "toxic";
+
+    // --- THREE.JS SCENE SETUP ---
+    const container = document.getElementById("canvas-container");
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(
+      45,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
+    camera.position.set(0, 0, 8.5);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.25;
+    container.appendChild(renderer.domElement);
+
+    // Helper function to build dynamic procedural high-res 2048x1024 aluminum can wrapper
+    function generateCanTexture(flavorKey) {
+      const config = FLAVOR_CONFIG[flavorKey];
+      const canvas = document.createElement("canvas");
+      canvas.width = 2048;
+      canvas.height = 1024;
+      const ctx = canvas.getContext("2d");
+
+      // 1. Dark brushed metallic background gradient
+      const bgGrad = ctx.createLinearGradient(0, 0, canvas.width, 0);
+      bgGrad.addColorStop(0.00, "#08080a");
+      bgGrad.addColorStop(0.20, config.darkColor);
+      bgGrad.addColorStop(0.40, "#101015");
+      bgGrad.addColorStop(0.65, config.darkColor);
+      bgGrad.addColorStop(0.85, "#08080a");
+      bgGrad.addColorStop(1.00, "#101015");
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // 2. Cybernetic diagonal carbon micro-stripes
+      ctx.fillStyle = "rgba(255, 255, 255, 0.02)";
+      for (let x = -canvas.height; x < canvas.width; x += 18) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x + canvas.height, canvas.height);
+        ctx.lineTo(x + canvas.height + 6, canvas.height);
+        ctx.lineTo(x + 6, 0);
+        ctx.fill();
+      }
+
+      // 3. Top Hazard Stripe
+      ctx.fillStyle = config.primaryCss;
+      ctx.fillRect(0, 40, canvas.width, 8);
+
+      // 4. Savage Monster Triple Claw Slashes (Left / Center view of can wrap)
+      function drawClaws(offsetX) {
+        ctx.save();
+        ctx.fillStyle = config.primaryCss;
+        ctx.shadowColor = config.primaryCss;
+        ctx.shadowBlur = 40;
+
+        // Claw 1
+        ctx.beginPath();
+        ctx.moveTo(offsetX - 70, 220);
+        ctx.bezierCurveTo(offsetX - 60, 420, offsetX - 110, 640, offsetX - 40, 840);
+        ctx.bezierCurveTo(offsetX - 80, 620, offsetX - 35, 410, offsetX - 50, 220);
+        ctx.fill();
+
+        // Claw 2 (Longest center slash)
+        ctx.beginPath();
+        ctx.moveTo(offsetX + 10, 180);
+        ctx.bezierCurveTo(offsetX + 35, 420, offsetX - 15, 680, offsetX + 65, 880);
+        ctx.bezierCurveTo(offsetX + 5, 660, offsetX + 45, 410, offsetX + 35, 180);
+        ctx.fill();
+
+        // Claw 3
+        ctx.beginPath();
+        ctx.moveTo(offsetX + 95, 240);
+        ctx.bezierCurveTo(offsetX + 120, 440, offsetX + 75, 660, offsetX + 145, 820);
+        ctx.bezierCurveTo(offsetX + 95, 640, offsetX + 130, 420, offsetX + 115, 240);
+        ctx.fill();
+
+        ctx.restore();
+      }
+
+      // Draw primary claw mark centered at x = 700 (primary frontal view)
+      drawClaws(720);
+
+      // 5. Vertical Bold Typography "SAVAGEE"
+      ctx.save();
+      ctx.translate(340, 820);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "900 135px Orbitron, sans-serif";
+      ctx.letterSpacing = "6px";
+      ctx.fillText("SAVAGEE", 0, 0);
+
+      // Sub-brand tagline
+      ctx.fillStyle = config.primaryCss;
+      ctx.font = "700 28px Orbitron, sans-serif";
+      ctx.fillText("BIO-ENGINEERED FUEL", 10, 42);
+      ctx.restore();
+
+      // 6. Front Flavor Tag Banner
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "900 48px Orbitron, sans-serif";
+      ctx.fillText(config.name, 560, 920);
+
+      ctx.fillStyle = config.primaryCss;
+      ctx.font = "700 22px 'Courier New', monospace";
+      ctx.fillText(`/// ${config.subtext}`, 560, 955);
+
+      // 7. Nutrition Facts Table & Warnings (Back of Can: x = 1350 -> 1850)
+      ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
+      ctx.fillRect(1380, 160, 480, 720);
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "900 36px Orbitron, sans-serif";
+      ctx.fillText("NUTRITION FACTS", 1400, 220);
+
+      ctx.fillStyle = config.primaryCss;
+      ctx.font = "700 18px 'Courier New', monospace";
+      ctx.fillText("SERVING SIZE: 1 CAN (16 FL OZ / 473ML)", 1400, 260);
+
+      ctx.strokeStyle = "rgba(255,255,255,0.3)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(1400, 280);
+      ctx.lineTo(1840, 280);
+      ctx.stroke();
+
+      const facts = [
+        ["CALORIES", "10"],
+        ["TOTAL FAT", "0g (0%)"],
+        ["SODIUM (HIMALAYAN)", "180mg (8%)"],
+        ["TOTAL CARBOHYDRATES", "2g (1%)"],
+        ["TOTAL SUGARS", "0g (0%)"],
+        ["ORGANIC GREEN CAFFEINE", "200mg"],
+        ["LION'S MANE EXTRACT", "500mg"],
+        ["L-THEANINE FOCUS COMPLEX", "150mg"],
+        ["TAURINE OSMO-LOAD", "1000mg"],
+        ["VITAMIN B6 & B12", "250% DV"]
+      ];
+
+      ctx.font = "600 20px 'Courier New', monospace";
+      facts.forEach((item, idx) => {
+        const y = 325 + idx * 44;
+        ctx.fillStyle = "#cccccc";
+        ctx.fillText(item[0], 1400, y);
+        ctx.fillStyle = config.primaryCss;
+        ctx.fillText(item[1], 1740, y);
+      });
+
+      // Barcode graphic
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(1400, 770, 240, 80);
+      for (let b = 0; b < 40; b++) {
+        if (Math.random() > 0.4) {
+          ctx.fillStyle = "#000000";
+          ctx.fillRect(1410 + b * 5.5, 770, 3, 65);
+        }
+      }
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.ClampToEdgeWrapping;
+      return texture;
+    }
+
+    // --- 3D CAN OBJECT ASSEMBLY ---
+    const canGroup = new THREE.Group();
+    scene.add(canGroup);
+
+    // Can Dimensions
+    const CAN_RADIUS = 1.35;
+    const CAN_HEIGHT = 4.8;
+
+    // Body Material with dynamic generated texture
+    let canTexture = generateCanTexture(currentFlavorKey);
+    const bodyMaterial = new THREE.MeshStandardMaterial({
+      map: canTexture,
+      metalness: 0.65,
+      roughness: 0.28,
+    });
+
+    // 1. Main Cylinder Body
+    const bodyGeometry = new THREE.CylinderGeometry(CAN_RADIUS, CAN_RADIUS, CAN_HEIGHT, 64, 1, true);
+    const canBody = new THREE.Mesh(bodyGeometry, bodyMaterial);
+    canGroup.add(canBody);
+
+    // 2. Shiny Metal Top Chime / Bevel
+    const silverMetalMaterial = new THREE.MeshStandardMaterial({
+      color: 0xd8d8d8,
+      metalness: 0.95,
+      roughness: 0.18
+    });
+
+    const topTaperGeo = new THREE.CylinderGeometry(CAN_RADIUS * 0.92, CAN_RADIUS, 0.25, 64);
+    const topTaper = new THREE.Mesh(topTaperGeo, silverMetalMaterial);
+    topTaper.position.y = CAN_HEIGHT / 2 + 0.125;
+    canGroup.add(topTaper);
+
+    const rimGeo = new THREE.TorusGeometry(CAN_RADIUS * 0.92, 0.05, 16, 64);
+    const rim = new THREE.Mesh(rimGeo, silverMetalMaterial);
+    rim.rotation.x = Math.PI / 2;
+    rim.position.y = CAN_HEIGHT / 2 + 0.25;
+    canGroup.add(rim);
+
+    // 3. Recessed Lid Face
+    const lidGeo = new THREE.CircleGeometry(CAN_RADIUS * 0.91, 64);
+    const lid = new THREE.Mesh(lidGeo, silverMetalMaterial);
+    lid.rotation.x = -Math.PI / 2;
+    lid.position.y = CAN_HEIGHT / 2 + 0.23;
+    canGroup.add(lid);
+
+    // 4. Aluminum Pull Tab Assembly
+    const tabGroup = new THREE.Group();
+    const tabBodyGeo = new THREE.BoxGeometry(0.35, 0.03, 0.7);
+    const tabBody = new THREE.Mesh(tabBodyGeo, silverMetalMaterial);
+    tabGroup.add(tabBody);
+
+    // Tab finger hole ring
+    const tabHoleGeo = new THREE.TorusGeometry(0.12, 0.03, 12, 24);
+    const tabHole = new THREE.Mesh(tabHoleGeo, silverMetalMaterial);
+    tabHole.rotation.x = Math.PI / 2;
+    tabHole.position.z = 0.2;
+    tabGroup.add(tabHole);
+
+    tabGroup.position.set(0, CAN_HEIGHT / 2 + 0.25, 0.15);
+    canGroup.add(tabGroup);
+
+    // 5. Bottom Taper & Recessed Base
+    const bottomTaperGeo = new THREE.CylinderGeometry(CAN_RADIUS, CAN_RADIUS * 0.85, 0.3, 64);
+    const bottomTaper = new THREE.Mesh(bottomTaperGeo, silverMetalMaterial);
+    bottomTaper.position.y = -CAN_HEIGHT / 2 - 0.15;
+    canGroup.add(bottomTaper);
+
+    const bottomBaseGeo = new THREE.CylinderGeometry(CAN_RADIUS * 0.85, CAN_RADIUS * 0.75, 0.1, 64);
+    const bottomBase = new THREE.Mesh(bottomBaseGeo, silverMetalMaterial);
+    bottomBase.position.y = -CAN_HEIGHT / 2 - 0.3;
+    canGroup.add(bottomBase);
+
+    // --- Studio Lighting Setup ---
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+    scene.add(ambientLight);
+
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.4);
+    keyLight.position.set(5, 8, 6);
+    scene.add(keyLight);
+
+    // Colored Neon Rim Light that adapts to active flavor
+    const rimLight = new THREE.PointLight(FLAVOR_CONFIG[currentFlavorKey].primaryHex, 3.5, 20);
+    rimLight.position.set(-5, 2, -3);
+    scene.add(rimLight);
+
+    const fillLight = new THREE.DirectionalLight(0xffffff, 0.6);
+    fillLight.position.set(0, -4, 4);
+    scene.add(fillLight);
+
+    // Carbonation Fizz Particles Rising Around Can
+    const particleCount = 280;
+    const particleGeometry = new THREE.BufferGeometry();
+    const particlePositions = new Float32Array(particleCount * 3);
+    const particleVelocities = [];
+
+    for (let i = 0; i < particleCount; i++) {
+      const theta = Math.random() * Math.PI * 2;
+      const radius = CAN_RADIUS + 0.2 + Math.random() * 1.8;
+      const y = (Math.random() - 0.5) * (CAN_HEIGHT * 1.6);
+      particlePositions[i * 3] = Math.cos(theta) * radius;
+      particlePositions[i * 3 + 1] = y;
+      particlePositions[i * 3 + 2] = Math.sin(theta) * radius;
+
+      particleVelocities.push({
+        y: 0.02 + Math.random() * 0.04,
+        angle: Math.random() * 0.02,
+        origRadius: radius
+      });
+    }
+
+    particleGeometry.setAttribute("position", new THREE.BufferAttribute(particlePositions, 3));
+
+    const particleMaterial = new THREE.PointsMaterial({
+      color: FLAVOR_CONFIG[currentFlavorKey].primaryHex,
+      size: 0.065,
+      transparent: true,
+      opacity: 0.75,
+      blending: THREE.AdditiveBlending
+    });
+
+    const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
+    scene.add(particleSystem);
+
+    // =========================================================================
+    // SCROLL-DRIVEN 3D ANIMATION ENGINE (KEYFRAMES & INTERPOLATION)
+    // =========================================================================
+    let scrollProgress = 0;
+    let targetScrollProgress = 0;
+
+    // Desired 3D coordinates calculated from scroll progress
+    let targetPos = { x: 0.5, y: 0.0, z: 0.0 };
+    let targetRot = { x: 0.15, y: 0.0, z: 0.08 };
+    let targetScale = 1.0;
+    let targetCameraZ = 8.5;
+    let particleSpeedFactor = 1.0;
+
+    // User manual drag delta (blended smoothly with scroll values)
+    let dragRotationOffset = { x: 0, y: 0 };
+    let isDragging = false;
+    let previousMousePosition = { x: 0, y: 0 };
+    let mouseParallax = { x: 0, y: 0 };
+
+    // HUD Elements
+    const hudRotY = document.getElementById("hud-rot-y");
+    const hudRotX = document.getElementById("hud-rot-x");
+    const hudScrollPct = document.getElementById("hud-scroll-pct");
+    const hudScrollBar = document.getElementById("hud-scroll-bar");
+    const hudStageName = document.getElementById("hud-stage-name");
+    const hudStageNum = document.getElementById("hud-stage-num");
+
+    // Math helper for linear interpolation
+    function lerp(start, end, factor) {
+      return start + (end - start) * factor;
+    }
+
+    // Evaluates current scroll progress and sets 3D keyframe targets
+    function updateScrollKeyframes() {
+      const isMobile = window.innerWidth < 1024;
+      const p = scrollProgress;
+
+      // Stage 1: Hero Section (0.00 -> 0.20)
+      if (p <= 0.20) {
+        const t = p / 0.20;
+        if (isMobile) {
+          targetPos.x = lerp(0, 0, t);
+          targetPos.y = lerp(0.3, 0.1, t);
+          targetPos.z = lerp(-1.0, -0.6, t);
+          targetScale = 0.85;
+        } else {
+          targetPos.x = lerp(0.55, 1.4, t);
+          targetPos.y = lerp(0.0, -0.1, t);
+          targetPos.z = lerp(0.0, 0.4, t);
+          targetScale = 1.0;
+        }
+        targetRot.x = lerp(0.15, 0.25, t);
+        targetRot.y = lerp(0.0, Math.PI * 0.85, t);
+        targetRot.z = lerp(0.08, 0.14, t);
+        targetCameraZ = 8.5;
+        particleSpeedFactor = 1.0;
+
+        if (hudStageName) {
+          hudStageName.innerText = "HERO";
+          hudStageNum.innerText = "01 / 05";
+        }
+      }
+      // Stage 2: Flavors Arsenal (0.20 -> 0.45)
+      // Can glides to side and orbits 180 degrees revealing back graphics & nutrition
+      else if (p <= 0.45) {
+        const t = (p - 0.20) / 0.25;
+        if (isMobile) {
+          targetPos.x = lerp(0, 0, t);
+          targetPos.y = lerp(0.1, 0.8, t);
+          targetPos.z = lerp(-0.6, -1.8, t);
+          targetScale = 0.72;
+        } else {
+          targetPos.x = lerp(1.4, 2.4, t);
+          targetPos.y = lerp(-0.1, -0.2, t);
+          targetPos.z = lerp(0.4, 0.8, t);
+          targetScale = 1.05;
+        }
+        targetRot.x = lerp(0.25, -0.05, t);
+        targetRot.y = lerp(Math.PI * 0.85, Math.PI * 1.85, t);
+        targetRot.z = lerp(0.14, -0.12, t);
+        targetCameraZ = 8.3;
+        particleSpeedFactor = 1.2;
+
+        if (hudStageName) {
+          hudStageName.innerText = "ARSENAL";
+          hudStageNum.innerText = "02 / 05";
+        }
+      }
+      // Stage 3: Formula Lab (0.45 -> 0.70)
+      // Macro tilt angle: inspect the aluminum pull-tab, rim, and nootropics banner
+      else if (p <= 0.70) {
+        const t = (p - 0.45) / 0.25;
+        if (isMobile) {
+          targetPos.x = lerp(0, 0, t);
+          targetPos.y = lerp(0.8, -0.2, t);
+          targetPos.z = lerp(-1.8, -0.8, t);
+          targetScale = 0.82;
+        } else {
+          targetPos.x = lerp(2.4, -2.1, t);
+          targetPos.y = lerp(-0.2, 0.25, t);
+          targetPos.z = lerp(0.8, 1.2, t);
+          targetScale = 1.15;
+        }
+        targetRot.x = lerp(-0.05, 1.15, t); // Tilted downward showing top lid & tab
+        targetRot.y = lerp(Math.PI * 1.85, Math.PI * 2.8, t);
+        targetRot.z = lerp(-0.12, 0.28, t);
+        targetCameraZ = 7.8;
+        particleSpeedFactor = 1.8; // High carbonation fizz rate in formula lab
+
+        if (hudStageName) {
+          hudStageName.innerText = "FORMULA";
+          hudStageNum.innerText = "03 / 05";
+        }
+      }
+      // Stage 4: Savage Squad (0.70 -> 0.88)
+      // Adrenaline high-speed action diagonal
+      else if (p <= 0.88) {
+        const t = (p - 0.70) / 0.18;
+        if (isMobile) {
+          targetPos.x = lerp(0, 0, t);
+          targetPos.y = lerp(-0.2, 0.2, t);
+          targetPos.z = lerp(-0.8, -1.2, t);
+          targetScale = 0.85;
+        } else {
+          targetPos.x = lerp(-2.1, 2.1, t);
+          targetPos.y = lerp(0.25, -0.15, t);
+          targetPos.z = lerp(1.2, 0.6, t);
+          targetScale = 1.0;
+        }
+        targetRot.x = lerp(1.15, 0.35, t);
+        targetRot.y = lerp(Math.PI * 2.8, Math.PI * 3.75, t);
+        targetRot.z = lerp(0.28, -0.42, t);
+        targetCameraZ = 8.5;
+        particleSpeedFactor = 1.5;
+
+        if (hudStageName) {
+          hudStageName.innerText = "SQUAD";
+          hudStageNum.innerText = "04 / 05";
+        }
+      }
+      // Stage 5: Audio Lab & Footer (0.88 -> 1.00)
+      // Can centers prominently in front of user, ready to pop
+      else {
+        const t = (p - 0.88) / 0.12;
+        targetPos.x = lerp(targetPos.x, 0.0, t);
+        targetPos.y = lerp(targetPos.y, -0.1, t);
+        targetPos.z = lerp(targetPos.z, isMobile ? -0.8 : 0.4, t);
+        targetRot.x = lerp(targetRot.x, 0.12, t);
+        targetRot.y = lerp(targetRot.y, Math.PI * 4.0, t);
+        targetRot.z = lerp(targetRot.z, 0.05, t);
+        targetScale = 1.0;
+        targetCameraZ = 8.5;
+        particleSpeedFactor = 1.0;
+
+        if (hudStageName) {
+          hudStageName.innerText = "AUDIO";
+          hudStageNum.innerText = "05 / 05";
+        }
+      }
+
+      // Update HUD readouts
+      if (hudScrollPct) {
+        const pct = Math.round(p * 100);
+        hudScrollPct.innerText = `${pct}%`;
+        if (hudScrollBar) hudScrollBar.style.width = `${pct}%`;
+      }
+    }
+
+    // Window Scroll Listener with smoothing
+    window.addEventListener("scroll", () => {
+      const scrollY = window.scrollY || window.pageYOffset;
+      const maxScroll = (document.documentElement.scrollHeight - window.innerHeight) || 1;
+      targetScrollProgress = Math.max(0, Math.min(1, scrollY / maxScroll));
+    }, { passive: true });
+
+    // Pointer drag interaction (supports both Hero hitbox and direct screen drag)
+    function onPointerDown(e) {
+      if (e.target.closest("button, a, input, select, textarea")) return;
+      isDragging = true;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      previousMousePosition = { x: clientX, y: clientY };
+    }
+
+    function onPointerMove(e) {
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+      if (isDragging) {
+        const deltaX = clientX - previousMousePosition.x;
+        const deltaY = clientY - previousMousePosition.y;
+
+        dragRotationOffset.y += deltaX * 0.008;
+        dragRotationOffset.x += deltaY * 0.006;
+        dragRotationOffset.x = Math.max(-0.6, Math.min(0.6, dragRotationOffset.x));
+
+        previousMousePosition = { x: clientX, y: clientY };
+      }
+
+      // Ambient subtle mouse parallax
+      mouseParallax.x = (clientX / window.innerWidth - 0.5) * 0.35;
+      mouseParallax.y = (clientY / window.innerHeight - 0.5) * 0.35;
+    }
+
+    function onPointerUp() {
+      isDragging = false;
+    }
+
+    // Attach interaction to both the hero drag zone and window
+    const interactionZone = document.getElementById("can-interaction-zone");
+    if (interactionZone) {
+      interactionZone.addEventListener("mousedown", onPointerDown);
+      interactionZone.addEventListener("touchstart", onPointerDown, { passive: true });
+    }
+    window.addEventListener("mousemove", onPointerMove);
+    window.addEventListener("mouseup", onPointerUp);
+    window.addEventListener("touchmove", onPointerMove, { passive: true });
+    window.addEventListener("touchend", onPointerUp);
+
+    // Responsive Canvas Resize
+    window.addEventListener("resize", () => {
+      if (!container) return;
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      updateScrollKeyframes();
+    });
+
+    // Flavor Change Logic
+    function applyFlavor(flavorKey) {
+      if (!FLAVOR_CONFIG[flavorKey]) return;
+      currentFlavorKey = flavorKey;
+      const config = FLAVOR_CONFIG[flavorKey];
+
+      // 1. Update 3D Texture dynamically
+      if (canTexture) canTexture.dispose();
+      canTexture = generateCanTexture(flavorKey);
+      bodyMaterial.map = canTexture;
+      bodyMaterial.needsUpdate = true;
+
+      // 2. Update 3D Neon Lighting & Fizz Particles
+      rimLight.color.setHex(config.primaryHex);
+      particleMaterial.color.setHex(config.primaryHex);
+
+      // 3. Update DOM Aura & Text Highlights
+      const aura = document.getElementById("ambient-aura");
+      if (aura) {
+        aura.style.backgroundColor = config.ambientCss;
+      }
+      
+      const heroAccent = document.getElementById("hero-title-accent");
+      if (heroAccent) {
+        heroAccent.style.color = config.accentText;
+        heroAccent.className = `transition-all duration-500 ${config.glowClass}`;
+      }
+
+      // 4. Update Flavor selector button active styling
+      document.querySelectorAll(".flavor-selector-btn").forEach(btn => {
+        const key = btn.getAttribute("data-flavor");
+        if (key === flavorKey) {
+          btn.className = "flavor-selector-btn active w-full p-4 rounded-xl border border-white/80 bg-white/10 text-left flex items-center justify-between transition-all group";
+        } else {
+          btn.className = "flavor-selector-btn w-full p-4 rounded-xl border border-savage-border bg-savage-card text-left flex items-center justify-between transition-all hover:bg-savage-card/80 group";
+        }
+      });
+    }
+
+    // Animated Can Fizz Explosion FX
+    let burstActive = false;
+    let burstProgress = 0;
+
+    function triggerPopAnimation() {
+      playCanCrackSound();
+      burstActive = true;
+      burstProgress = 0;
+
+      // Quick tab push animation in 3D
+      tabGroup.rotation.x = -0.35;
+      setTimeout(() => {
+        tabGroup.rotation.x = -0.15;
+      }, 150);
+
+      showCustomToast(`Cracked ${FLAVOR_CONFIG[currentFlavorKey].name}! High voltage carbonation unleashed.`);
+    }
+
+    // =========================================================================
+    // MAIN 3D ANIMATION RENDER LOOP WITH SCROLL LERP
+    // =========================================================================
+    let clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const delta = clock.getDelta();
+      const time = clock.getElapsedTime();
+
+      // 1. Smoothly interpolate scroll progress
+      scrollProgress = lerp(scrollProgress, targetScrollProgress, 0.08);
+      updateScrollKeyframes();
+
+      // 2. Idle subtle rotation when not actively dragging
+      if (!isDragging) {
+        dragRotationOffset.x = lerp(dragRotationOffset.x, 0, 0.03);
+        dragRotationOffset.y += 0.003;
+      }
+
+      // 3. Smoothly lerp can transform towards scroll keyframe targets
+      const smoothFactor = 0.075;
+      canGroup.position.x = lerp(canGroup.position.x, targetPos.x + mouseParallax.x, smoothFactor);
+      canGroup.position.y = lerp(canGroup.position.y, targetPos.y - mouseParallax.y + Math.sin(time * 2.0) * 0.08, smoothFactor);
+      canGroup.position.z = lerp(canGroup.position.z, targetPos.z, smoothFactor);
+
+      // Rotation: combines scroll trajectory + user drag delta
+      canGroup.rotation.x = lerp(canGroup.rotation.x, targetRot.x + dragRotationOffset.x, smoothFactor);
+      canGroup.rotation.y = lerp(canGroup.rotation.y, targetRot.y + dragRotationOffset.y, smoothFactor);
+      canGroup.rotation.z = lerp(canGroup.rotation.z, targetRot.z + Math.sin(time * 1.5) * 0.03, smoothFactor);
+
+      // Camera distance lerp
+      camera.position.z = lerp(camera.position.z, targetCameraZ, smoothFactor);
+
+      // Uniform Scale Lerp
+      const currentScale = canGroup.scale.x;
+      const newScale = lerp(currentScale, targetScale, smoothFactor);
+      canGroup.scale.set(newScale, newScale, newScale);
+
+      // Update live Telemetry HUD values
+      if (hudRotY) hudRotY.innerText = `${Math.round(((canGroup.rotation.y * 180 / Math.PI) % 360 + 360) % 360)}°`;
+      if (hudRotX) hudRotX.innerText = `${Math.round(canGroup.rotation.x * 180 / Math.PI)}°`;
+
+      // 4. Update Carbonation Particles based on scroll-driven speed factor
+      const positions = particleGeometry.attributes.position.array;
+      const effSpeed = particleSpeedFactor;
+      for (let i = 0; i < particleCount; i++) {
+        positions[i * 3 + 1] += particleVelocities[i].y * effSpeed;
+
+        if (positions[i * 3 + 1] > CAN_HEIGHT * 1.2) {
+          positions[i * 3 + 1] = -CAN_HEIGHT * 0.9;
+        }
+
+        if (burstActive) {
+          positions[i * 3] += (Math.random() - 0.5) * 0.14;
+          positions[i * 3 + 2] += (Math.random() - 0.5) * 0.14;
+        }
+      }
+      particleGeometry.attributes.position.needsUpdate = true;
+
+      // 5. Handle can pop burst cooldown
+      if (burstActive) {
+        burstProgress += delta;
+        const burstScale = targetScale * (1 + Math.sin(burstProgress * 22) * 0.05);
+        canGroup.scale.setScalar(burstScale);
+        if (burstProgress > 0.45) {
+          burstActive = false;
+        }
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    // Initial window load setup
+    window.onload = function () {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      updateScrollKeyframes();
+      animate();
+    };
+
+    // Flavor Selector Button Listeners
+    document.querySelectorAll(".flavor-selector-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const flavor = btn.getAttribute("data-flavor");
+        applyFlavor(flavor);
+      });
+    });
+
+    // Pop Can Trigger Buttons
+    const popBtn = document.getElementById("pop-can-btn");
+    if (popBtn) popBtn.addEventListener("click", triggerPopAnimation);
+
+    const audioCrackCta = document.getElementById("audio-crack-cta");
+    if (audioCrackCta) audioCrackCta.addEventListener("click", triggerPopAnimation);
+
+    // Toast Alert Notification
+    let toastTimeout;
+    function showCustomToast(msg) {
+      const toast = document.getElementById("toast");
+      const toastMsg = document.getElementById("toast-message");
+      if (!toast || !toastMsg) return;
+
+      toastMsg.innerText = msg;
+      toast.classList.remove("translate-y-24", "opacity-0");
+      toast.classList.add("translate-y-0", "opacity-100");
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove("translate-y-0", "opacity-100");
+        toast.classList.add("translate-y-24", "opacity-0");
+      }, 3500);
+    }
+
+    // --- SHOPPING CRATE (CART) & CHECKOUT MODAL LOGIC ---
+    let cart = [];
+
+    function addFlavorToCart(flavorKey) {
+      const flavor = FLAVOR_CONFIG[flavorKey];
+      const existing = cart.find(item => item.key === flavorKey);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({
+          key: flavorKey,
+          name: flavor.name,
+          price: 34.99,
+          qty: 1,
+          color: flavor.primaryCss
+        });
+      }
+      updateCartUI();
+      openCart();
+      showCustomToast(`Added 12-Pack ${flavor.name} to crate.`);
+    }
+
+    function removeFlavorFromCart(flavorKey) {
+      cart = cart.filter(item => item.key !== flavorKey);
+      updateCartUI();
+    }
+
+    function updateCartQty(flavorKey, delta) {
+      const item = cart.find(i => i.key === flavorKey);
+      if (!item) return;
+      item.qty += delta;
+      if (item.qty <= 0) {
+        removeFlavorFromCart(flavorKey);
+      } else {
+        updateCartUI();
+      }
+    }
+
+    function updateCartUI() {
+      const container = document.getElementById("cart-items-container");
+      const badge = document.getElementById("cart-count-badge");
+      const subtotalEl = document.getElementById("cart-subtotal");
+      const totalEl = document.getElementById("cart-total");
+      const checkoutBtn = document.getElementById("checkout-btn");
+
+      const totalCount = cart.reduce((acc, curr) => acc + curr.qty, 0);
+      if (badge) badge.innerText = totalCount;
+
+      if (!container) return;
+
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-12 text-zinc-500 font-mono text-xs">
+            <span class="text-3xl block mb-2">⚡</span>
+            YOUR CRATE IS EMPTY. SELECT A MUTATION.
+          </div>
+        `;
+        if (subtotalEl) subtotalEl.innerText = "$0.00";
+        if (totalEl) totalEl.innerText = "$0.00";
+        if (checkoutBtn) checkoutBtn.disabled = true;
+        return;
+      }
+
+      if (checkoutBtn) checkoutBtn.disabled = false;
+
+      let subtotal = 0;
+      container.innerHTML = cart.map(item => {
+        const itemTotal = item.price * item.qty;
+        subtotal += itemTotal;
+        return `
+          <div class="bg-zinc-900 border border-savage-border p-4 rounded-xl flex items-center justify-between">
+            <div>
+              <div class="flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full" style="background-color: ${item.color}"></span>
+                <span class="font-display font-bold text-sm text-white">${item.name}</span>
+              </div>
+              <span class="text-xs font-mono text-zinc-400">12-PACK CRATE • $${item.price}</span>
+            </div>
+            <div class="flex items-center space-x-3">
+              <div class="flex items-center border border-zinc-700 rounded-lg overflow-hidden bg-black font-mono text-xs">
+                <button onclick="updateCartQty('${item.key}', -1)" class="px-2 py-1 text-zinc-400 hover:text-white">-</button>
+                <span class="px-2 py-1 text-white font-bold">${item.qty}</span>
+                <button onclick="updateCartQty('${item.key}', 1)" class="px-2 py-1 text-zinc-400 hover:text-white">+</button>
+              </div>
+              <button onclick="removeFlavorFromCart('${item.key}')" class="text-zinc-500 hover:text-red-400 text-xs">✕</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      if (subtotalEl) subtotalEl.innerText = `$${subtotal.toFixed(2)}`;
+      if (totalEl) totalEl.innerText = `$${subtotal.toFixed(2)}`;
+    }
+
+    // Cart Drawer Open/Close
+    const cartDrawer = document.getElementById("cart-drawer");
+    const cartBackdrop = document.getElementById("cart-backdrop");
+    const cartPanel = document.getElementById("cart-panel");
+    const openCartBtn = document.getElementById("open-cart-btn");
+    const closeCartBtn = document.getElementById("close-cart-btn");
+
+    function openCart() {
+      if (!cartDrawer || !cartPanel) return;
+      cartDrawer.classList.remove("pointer-events-none", "opacity-0");
+      cartDrawer.classList.add("pointer-events-auto", "opacity-100");
+      cartPanel.classList.remove("translate-x-full");
+      cartPanel.classList.add("translate-x-0");
+    }
+
+    function closeCart() {
+      if (!cartDrawer || !cartPanel) return;
+      cartPanel.classList.remove("translate-x-0");
+      cartPanel.classList.add("translate-x-full");
+      setTimeout(() => {
+        cartDrawer.classList.remove("pointer-events-auto", "opacity-100");
+        cartDrawer.classList.add("pointer-events-none", "opacity-0");
+      }, 300);
+    }
+
+    if (openCartBtn) openCartBtn.addEventListener("click", openCart);
+    if (closeCartBtn) closeCartBtn.addEventListener("click", closeCart);
+    if (cartBackdrop) cartBackdrop.addEventListener("click", closeCart);
+
+    // Hero Buy Buttons trigger crate addition
+    const heroBuyBtn = document.getElementById("hero-buy-btn");
+    if (heroBuyBtn) {
+      heroBuyBtn.addEventListener("click", () => {
+        addFlavorToCart(currentFlavorKey);
+      });
+    }
+
+    const orderCrateCta = document.getElementById("order-crate-cta");
+    if (orderCrateCta) {
+      orderCrateCta.addEventListener("click", () => {
+        addFlavorToCart(currentFlavorKey);
+      });
+    }
+
+    // Checkout Modal Handler (Zero Alerts)
+    const checkoutBtn = document.getElementById("checkout-btn");
+    const checkoutModal = document.getElementById("checkout-modal");
+    const closeModalBtn = document.getElementById("close-modal-btn");
+
+    if (checkoutBtn) {
+      checkoutBtn.addEventListener("click", () => {
+        closeCart();
+        if (checkoutModal) checkoutModal.classList.remove("hidden");
+        // Reset Cart
+        cart = [];
+        updateCartUI();
+      });
+    }
+
+    if (closeModalBtn && checkoutModal) {
+      closeModalBtn.addEventListener("click", () => {
+        checkoutModal.classList.add("hidden");
+      });
+    }
+
+    // Newsletter Demo
+    function handleNewsletter(e) {
+      e.preventDefault();
+      showCustomToast("Subscription recorded. You are queued for drop access.");
+      e.target.reset();
+    }
+  </script>
+</body>
+</html>
